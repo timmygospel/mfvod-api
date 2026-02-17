@@ -227,3 +227,5 @@ Block merge unless checks are green.
   - `{ "error": { code, message, details?, requestId } }` error
 - Central error handling; no stack traces in prod responses.
 - Structured logs with redaction.
+
+ 
