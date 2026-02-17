@@ -15,6 +15,13 @@ import { GetCourseById } from '../../application/course/GetCourseById.js';
 import { ListCourses } from '../../application/course/ListCourses.js';
 import { UpdateCourse } from '../../application/course/UpdateCourse.js';
 import { DeleteCourse } from '../../application/course/DeleteCourse.js';
+import { PgCategoryRepo } from '../../infrastructure/db/repos/PgCategoryRepo.js';
+import { CreateCategory } from '../../application/category/CreateCategory.js';
+import { GetCategoryById } from '../../application/category/GetCategoryById.js';
+import { ListCategories } from '../../application/category/ListCategories.js';
+import { UpdateCategory } from '../../application/category/UpdateCategory.js';
+import { DeleteCategory } from '../../application/category/DeleteCategory.js';
+import { createCategoryRouter } from './routes/categories.js';
 
 export function createApp(): express.Express {
   const app = express();
@@ -42,6 +49,16 @@ export function createApp(): express.Express {
     deleteCourse: new DeleteCourse(courseRepo),
   });
   app.use('/courses', courseRouter);
+
+  const categoryRepo = new PgCategoryRepo(pool);
+  const categoryRouter = createCategoryRouter({
+    createCategory: new CreateCategory(categoryRepo),
+    getCategoryById: new GetCategoryById(categoryRepo),
+    listCategories: new ListCategories(categoryRepo),
+    updateCategory: new UpdateCategory(categoryRepo),
+    deleteCategory: new DeleteCategory(categoryRepo),
+  });
+  app.use('/categories', categoryRouter);
 
   setupSwagger(app);
 

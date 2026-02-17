@@ -163,6 +163,134 @@ const swaggerDocument = {
         },
       },
     },
+    '/categories': {
+      get: {
+        summary: 'List all categories',
+        tags: ['Categories'],
+        responses: {
+          '200': {
+            description: 'List of categories',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    data: {
+                      type: 'array',
+                      items: { $ref: '#/components/schemas/Category' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      post: {
+        summary: 'Create a category',
+        tags: ['Categories'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['name'],
+                properties: {
+                  name: { type: 'string', minLength: 3, maxLength: 100 },
+                  description: { type: 'string', maxLength: 2000 },
+                  status: { type: 'string', enum: ['active', 'archived'] },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          '201': {
+            description: 'Category created',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: { data: { $ref: '#/components/schemas/Category' } },
+                },
+              },
+            },
+          },
+          '400': { description: 'Validation error' },
+        },
+      },
+    },
+    '/categories/{id}': {
+      get: {
+        summary: 'Get a category by ID',
+        tags: ['Categories'],
+        parameters: [
+          { name: 'id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } },
+        ],
+        responses: {
+          '200': {
+            description: 'Category found',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: { data: { $ref: '#/components/schemas/Category' } },
+                },
+              },
+            },
+          },
+          '404': { description: 'Category not found' },
+        },
+      },
+      put: {
+        summary: 'Update a category',
+        tags: ['Categories'],
+        parameters: [
+          { name: 'id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  name: { type: 'string', minLength: 3, maxLength: 100 },
+                  description: { type: 'string', maxLength: 2000 },
+                  status: { type: 'string', enum: ['active', 'archived'] },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Category updated',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: { data: { $ref: '#/components/schemas/Category' } },
+                },
+              },
+            },
+          },
+          '404': { description: 'Category not found' },
+        },
+      },
+      delete: {
+        summary: 'Delete a category',
+        tags: ['Categories'],
+        parameters: [
+          { name: 'id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } },
+        ],
+        responses: {
+          '204': { description: 'Category deleted' },
+          '404': { description: 'Category not found' },
+        },
+      },
+    },
     '/ready': {
       get: {
         summary: 'Readiness check',
@@ -190,6 +318,17 @@ const swaggerDocument = {
   components: {
     schemas: {
       Course: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', format: 'uuid' },
+          name: { type: 'string' },
+          description: { type: 'string' },
+          status: { type: 'string', enum: ['active', 'archived'] },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' },
+        },
+      },
+      Category: {
         type: 'object',
         properties: {
           id: { type: 'string', format: 'uuid' },
