@@ -291,6 +291,177 @@ const swaggerDocument = {
         },
       },
     },
+    '/videos': {
+      get: {
+        summary: 'List all videos',
+        tags: ['Videos'],
+        responses: {
+          '200': {
+            description: 'List of videos',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    data: {
+                      type: 'array',
+                      items: { $ref: '#/components/schemas/Video' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      post: {
+        summary: 'Create a video',
+        tags: ['Videos'],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['title', 'courseId'],
+                properties: {
+                  title: { type: 'string', minLength: 3, maxLength: 100 },
+                  description: { type: 'string', maxLength: 2000 },
+                  status: { type: 'string', enum: ['active', 'archived', 'disabled'] },
+                  courseId: { type: 'string', format: 'uuid' },
+                  sortOrder: { type: 'integer' },
+                  thumbnailUrl: { type: 'string', nullable: true },
+                  muxAssetId: { type: 'string', nullable: true },
+                  muxPlaybackId: { type: 'string', nullable: true },
+                  duration: { type: 'integer', nullable: true },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          '201': {
+            description: 'Video created',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: { data: { $ref: '#/components/schemas/Video' } },
+                },
+              },
+            },
+          },
+          '400': { description: 'Validation error' },
+        },
+      },
+    },
+    '/videos/{id}': {
+      get: {
+        summary: 'Get a video by ID',
+        tags: ['Videos'],
+        parameters: [
+          { name: 'id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } },
+        ],
+        responses: {
+          '200': {
+            description: 'Video found',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: { data: { $ref: '#/components/schemas/Video' } },
+                },
+              },
+            },
+          },
+          '404': { description: 'Video not found' },
+        },
+      },
+      put: {
+        summary: 'Update a video',
+        tags: ['Videos'],
+        parameters: [
+          { name: 'id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  title: { type: 'string', minLength: 3, maxLength: 100 },
+                  description: { type: 'string', maxLength: 2000 },
+                  status: { type: 'string', enum: ['active', 'archived', 'disabled'] },
+                  sortOrder: { type: 'integer' },
+                  thumbnailUrl: { type: 'string', nullable: true },
+                  muxAssetId: { type: 'string', nullable: true },
+                  muxPlaybackId: { type: 'string', nullable: true },
+                  duration: { type: 'integer', nullable: true },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Video updated',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: { data: { $ref: '#/components/schemas/Video' } },
+                },
+              },
+            },
+          },
+          '404': { description: 'Video not found' },
+        },
+      },
+      delete: {
+        summary: 'Delete a video',
+        tags: ['Videos'],
+        parameters: [
+          { name: 'id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } },
+        ],
+        responses: {
+          '204': { description: 'Video deleted' },
+          '404': { description: 'Video not found' },
+        },
+      },
+    },
+    '/videos/course/{courseId}': {
+      get: {
+        summary: 'List videos by course',
+        tags: ['Videos'],
+        parameters: [
+          {
+            name: 'courseId',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        ],
+        responses: {
+          '200': {
+            description: 'List of videos for the course',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    data: {
+                      type: 'array',
+                      items: { $ref: '#/components/schemas/Video' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
     '/ready': {
       get: {
         summary: 'Readiness check',
@@ -335,6 +506,23 @@ const swaggerDocument = {
           name: { type: 'string' },
           description: { type: 'string' },
           status: { type: 'string', enum: ['active', 'archived'] },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' },
+        },
+      },
+      Video: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', format: 'uuid' },
+          title: { type: 'string' },
+          description: { type: 'string' },
+          status: { type: 'string', enum: ['active', 'archived', 'disabled'] },
+          courseId: { type: 'string', format: 'uuid' },
+          sortOrder: { type: 'integer' },
+          thumbnailUrl: { type: 'string', nullable: true },
+          muxAssetId: { type: 'string', nullable: true },
+          muxPlaybackId: { type: 'string', nullable: true },
+          duration: { type: 'integer', nullable: true },
           createdAt: { type: 'string', format: 'date-time' },
           updatedAt: { type: 'string', format: 'date-time' },
         },

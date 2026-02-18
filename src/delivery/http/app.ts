@@ -22,6 +22,14 @@ import { ListCategories } from '../../application/category/ListCategories.js';
 import { UpdateCategory } from '../../application/category/UpdateCategory.js';
 import { DeleteCategory } from '../../application/category/DeleteCategory.js';
 import { createCategoryRouter } from './routes/categories.js';
+import { PgVideoRepo } from '../../infrastructure/db/repos/PgVideoRepo.js';
+import { CreateVideo } from '../../application/video/CreateVideo.js';
+import { GetVideoById } from '../../application/video/GetVideoById.js';
+import { ListVideos } from '../../application/video/ListVideos.js';
+import { UpdateVideo } from '../../application/video/UpdateVideo.js';
+import { DeleteVideo } from '../../application/video/DeleteVideo.js';
+import { ListVideosByCourse } from '../../application/video/ListVideosByCourse.js';
+import { createVideoRouter } from './routes/videos.js';
 
 export function createApp(): express.Express {
   const app = express();
@@ -59,6 +67,17 @@ export function createApp(): express.Express {
     deleteCategory: new DeleteCategory(categoryRepo),
   });
   app.use('/categories', categoryRouter);
+
+  const videoRepo = new PgVideoRepo(pool);
+  const videoRouter = createVideoRouter({
+    createVideo: new CreateVideo(videoRepo, courseRepo),
+    getVideoById: new GetVideoById(videoRepo),
+    listVideos: new ListVideos(videoRepo),
+    updateVideo: new UpdateVideo(videoRepo),
+    deleteVideo: new DeleteVideo(videoRepo),
+    listVideosByCourse: new ListVideosByCourse(videoRepo),
+  });
+  app.use('/videos', videoRouter);
 
   setupSwagger(app);
 
