@@ -9,6 +9,7 @@ export interface VideoPersistence {
   course_id: string;
   sort_order: number;
   thumbnail_url: string | null;
+  mux_upload_id: string | null;
   mux_asset_id: string | null;
   mux_playback_id: string | null;
   duration: number | null;
@@ -24,6 +25,7 @@ export interface VideoDTO {
   courseId: string;
   sortOrder: number;
   thumbnailUrl: string | null;
+  muxUploadId: string | null;
   muxAssetId: string | null;
   muxPlaybackId: string | null;
   duration: number | null;
@@ -41,6 +43,7 @@ export class VideoMapper {
         courseId: raw.course_id,
         sortOrder: raw.sort_order,
         thumbnailUrl: raw.thumbnail_url,
+        muxUploadId: raw.mux_upload_id,
         muxAssetId: raw.mux_asset_id,
         muxPlaybackId: raw.mux_playback_id,
         duration: raw.duration,
@@ -60,6 +63,7 @@ export class VideoMapper {
       course_id: video.courseId,
       sort_order: video.sortOrder,
       thumbnail_url: video.thumbnailUrl,
+      mux_upload_id: video.muxUploadId,
       mux_asset_id: video.muxAssetId,
       mux_playback_id: video.muxPlaybackId,
       duration: video.duration,
@@ -77,6 +81,7 @@ export class VideoMapper {
       courseId: video.courseId,
       sortOrder: video.sortOrder,
       thumbnailUrl: video.thumbnailUrl,
+      muxUploadId: video.muxUploadId,
       muxAssetId: video.muxAssetId,
       muxPlaybackId: video.muxPlaybackId,
       duration: video.duration,

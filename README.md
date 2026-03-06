@@ -31,7 +31,8 @@ impletment swagger so i can  test endpoints
 create api and create git pr's
 should be secure so follow owasp security feature best practice 
 
-
+admin@mfvod.com
+Admin1234!
 
 
 

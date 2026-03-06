@@ -13,6 +13,7 @@ interface CreateVideoInput {
   courseId: string;
   sortOrder?: number;
   thumbnailUrl?: string | null;
+  muxUploadId?: string | null;
   muxAssetId?: string | null;
   muxPlaybackId?: string | null;
   duration?: number | null;
@@ -24,6 +25,7 @@ interface UpdateVideoInput {
   status?: string;
   sortOrder?: number;
   thumbnailUrl?: string | null;
+  muxUploadId?: string | null;
   muxAssetId?: string | null;
   muxPlaybackId?: string | null;
   duration?: number | null;
@@ -36,6 +38,7 @@ interface ReconstituteInput {
   courseId: string;
   sortOrder: number;
   thumbnailUrl: string | null;
+  muxUploadId: string | null;
   muxAssetId: string | null;
   muxPlaybackId: string | null;
   duration: number | null;
@@ -66,6 +69,10 @@ export class Video extends AggregateRoot<VideoProps> {
 
   get thumbnailUrl(): string | null {
     return this.props.thumbnailUrl;
+  }
+
+  get muxUploadId(): string | null {
+    return this.props.muxUploadId;
   }
 
   get muxAssetId(): string | null {
@@ -111,6 +118,7 @@ export class Video extends AggregateRoot<VideoProps> {
         courseId: input.courseId,
         sortOrder: input.sortOrder ?? 0,
         thumbnailUrl: input.thumbnailUrl ?? null,
+        muxUploadId: input.muxUploadId ?? null,
         muxAssetId: input.muxAssetId ?? null,
         muxPlaybackId: input.muxPlaybackId ?? null,
         duration: input.duration ?? null,
@@ -129,6 +137,7 @@ export class Video extends AggregateRoot<VideoProps> {
         courseId: input.courseId,
         sortOrder: input.sortOrder,
         thumbnailUrl: input.thumbnailUrl,
+        muxUploadId: input.muxUploadId,
         muxAssetId: input.muxAssetId,
         muxPlaybackId: input.muxPlaybackId,
         duration: input.duration,
@@ -164,6 +173,8 @@ export class Video extends AggregateRoot<VideoProps> {
           sortOrder: input.sortOrder !== undefined ? input.sortOrder : this.props.sortOrder,
           thumbnailUrl:
             input.thumbnailUrl !== undefined ? input.thumbnailUrl : this.props.thumbnailUrl,
+          muxUploadId:
+            input.muxUploadId !== undefined ? input.muxUploadId : this.props.muxUploadId,
           muxAssetId: input.muxAssetId !== undefined ? input.muxAssetId : this.props.muxAssetId,
           muxPlaybackId:
             input.muxPlaybackId !== undefined ? input.muxPlaybackId : this.props.muxPlaybackId,

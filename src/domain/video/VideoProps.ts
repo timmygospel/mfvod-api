@@ -9,6 +9,7 @@ export interface VideoProps {
   courseId: string;
   sortOrder: number;
   thumbnailUrl: string | null;
+  muxUploadId: string | null;
   muxAssetId: string | null;
   muxPlaybackId: string | null;
   duration: number | null;

@@ -29,7 +29,17 @@ import { ListVideos } from '../../application/video/ListVideos.js';
 import { UpdateVideo } from '../../application/video/UpdateVideo.js';
 import { DeleteVideo } from '../../application/video/DeleteVideo.js';
 import { ListVideosByCourse } from '../../application/video/ListVideosByCourse.js';
+import { RequestUploadUrl } from '../../application/video/RequestUploadUrl.js';
+import { MuxService } from '../../infrastructure/mux/MuxService.js';
 import { createVideoRouter } from './routes/videos.js';
+import { createMuxRouter } from './routes/mux.js';
+import { PgUserRepo } from '../../infrastructure/db/repos/PgUserRepo.js';
+import { RegisterUser } from '../../application/user/RegisterUser.js';
+import { LoginUser } from '../../application/user/LoginUser.js';
+import { SetupTwoFactor } from '../../application/user/SetupTwoFactor.js';
+import { VerifyTwoFactor } from '../../application/user/VerifyTwoFactor.js';
+import { RefreshToken } from '../../application/user/RefreshToken.js';
+import { createAuthRouter } from './routes/auth.js';
 
 export function createApp(): express.Express {
   const app = express();
@@ -44,6 +54,17 @@ export function createApp(): express.Express {
   );
 
   app.use(pinoHttp({ logger }));
+
+  // Capture raw body for Mux webhook signature verification
+  app.use(
+    '/mux/webhook',
+    express.raw({ type: 'application/json' }),
+    (req, _res, next) => {
+      (req as typeof req & { rawBody: string }).rawBody = req.body.toString('utf8');
+      next();
+    },
+  );
+
   app.use(express.json());
 
   app.use(healthRouter);
@@ -69,6 +90,7 @@ export function createApp(): express.Express {
   app.use('/categories', categoryRouter);
 
   const videoRepo = new PgVideoRepo(pool);
+  const muxService = new MuxService();
   const videoRouter = createVideoRouter({
     createVideo: new CreateVideo(videoRepo, courseRepo),
     getVideoById: new GetVideoById(videoRepo),
@@ -76,8 +98,22 @@ export function createApp(): express.Express {
     updateVideo: new UpdateVideo(videoRepo),
     deleteVideo: new DeleteVideo(videoRepo),
     listVideosByCourse: new ListVideosByCourse(videoRepo),
+    requestUploadUrl: new RequestUploadUrl(videoRepo, muxService),
   });
   app.use('/videos', videoRouter);
+
+  const muxRouter = createMuxRouter(muxService, videoRepo);
+  app.use('/mux', muxRouter);
+
+  const userRepo = new PgUserRepo(pool);
+  const authRouter = createAuthRouter({
+    registerUser: new RegisterUser(userRepo),
+    loginUser: new LoginUser(userRepo),
+    setupTwoFactor: new SetupTwoFactor(userRepo),
+    verifyTwoFactor: new VerifyTwoFactor(userRepo),
+    refreshToken: new RefreshToken(userRepo),
+  });
+  app.use('/auth', authRouter);
 
   setupSwagger(app);
 

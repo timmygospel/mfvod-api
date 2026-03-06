@@ -7,7 +7,13 @@
       "Bash(npx tsc:*)",
       "Bash(npm run lint:*)",
       "Bash(npm run format:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(curl:*)",
+      "Bash(python -m json.tool:*)",
+      "Bash(/c/github/mfvod-api/.env.example:*)",
+      "Bash(/c/github/mfvod-api/.env:*)",
+      "Bash(npm run:*)",
+      "Bash(node-pg-migrate create:*)"
     ]
   }
 }
